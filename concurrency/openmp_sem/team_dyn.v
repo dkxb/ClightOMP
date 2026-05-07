@@ -371,21 +371,6 @@ Section SiblingTreeZipper.
   Definition sub_tree s' s : Prop :=
     ∃ k, tz_comp k s' s.
 
-  Lemma stree_update_correct is_target f s1 s2 :
-    stree_update is_target f s1 = Some s2 →
-    ∃ k s', tz_comp k s' s1 ∧ tz_comp k (f s') s2.
-  Proof.
-    intros. rewrite /stree_update in H.
-    unfold_mbind_in_hyp; destruct_match!.
-    rewrite /tz_update in Heqo.
-    unfold_mbind_in_hyp; destruct_match!.
-    exists t0, (this t0).
-    destruct (tz_lookup_correct _ _ _ Heqo0).
-    rewrite /tz_comp; split.
-    - destruct t0; rewrite /this // .  
-    - inversion Heqo. rewrite H3 //.
-  Qed.
-
 End SiblingTreeZipper.
 
 Section TreeZipperTests.
@@ -583,23 +568,6 @@ Section OpenMPThreads.
       Definition team_mates_tids tid (t:team_tree) : option $ list nat :=
         ref ← lookup_tid tid t;
         Some $ map (λ x, x.data.(t_tid)) (forest ref).
-      
-      Lemma in_team_mates_tids tid ttree mates_tids :
-        Some mates_tids = team_mates_tids tid ttree ->
-        In tid mates_tids.
-      Proof.
-        intros. rewrite /team_mates_tids in H.
-        destruct (lookup_tid tid ttree) eqn:?; last done.
-        simpl in H. injection H; intros; subst.
-        apply stree_lookup_correct in Heqo as [? ?].
-        rewrite /is_leaf_tid /is_leaf_tid' in H0.
-        rewrite map_app map_cons.
-        apply in_or_app. right.
-        destruct (t .this) eqn:?; try done.
-        destruct l; try done.
-        simpl. left.
-        destruct (is_tid_dec tid o); done.
-      Qed.
 
       (* pop the team executing context for the team that tid is in *)
       Definition team_pop_team_exec_context tz tid : option (team_zipper * team_executing_context) :=
