@@ -26,7 +26,7 @@ We omit irrelevant files from the VST repository.
 [Install opam](https://opam.ocaml.org/doc/Install.html), then create an opam switch:
 
 ```(bash)
-opam switch create vst_on_iris ocaml-variants.4.14.1+options ocaml-option-flambda
+opam switch create ClightOMP ocaml-variants.4.14.1+options ocaml-option-flambda
 ```
 
 Install dependencies:
